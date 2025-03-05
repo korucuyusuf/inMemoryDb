@@ -2,7 +2,6 @@ package repository
 
 import (
 	"encoding/json"
-	uuuid "github.com/google/uuid"
 	"github.com/tidwall/buntdb"
 	"log"
 	"time"
@@ -27,18 +26,13 @@ func NewRepository() *Repository {
 
 func (r *Repository) Add(data Data, ttl time.Duration) error {
 
-	savedData := Data{
-		Id:   uuuid.New().String(),
-		Name: data.Name,
-	}
-
-	jsonData, err := json.Marshal(savedData)
+	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
 	return r.db.Update(func(tx *buntdb.Tx) error {
-		_, _, err := tx.Set(savedData.Id, string(jsonData), &buntdb.SetOptions{Expires: true, TTL: ttl})
+		_, _, err := tx.Set(data.Id, string(jsonData), &buntdb.SetOptions{Expires: true, TTL: ttl})
 		return err
 	})
 }

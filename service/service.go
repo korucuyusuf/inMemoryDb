@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"inMemoryDb/repository"
 	"time"
 )
@@ -15,7 +16,10 @@ func NewService(repository *repository.Repository) *Service {
 }
 
 func (s *Service) CreateData(name string) (*repository.Data, error) {
-	newData := &repository.Data{Name: name}
+	newData := &repository.Data{
+		Id:   uuid.NewString(),
+		Name: name,
+	}
 
 	err := s.repository.Add(*newData, 1*time.Hour)
 	if err != nil {
